@@ -1,4 +1,4 @@
-# PC Power Live Dashboard (Vercel + Upstash Redis)
+# PC Power Live Dashboard (Vercel + Supabase)
 
 Realtime dashboard to show:
 - Uptime
@@ -7,17 +7,21 @@ Realtime dashboard to show:
 - Estimated kWh/cost from boot
 - Recent history timeline
 
-## 1) Required env vars on Vercel
+## 1) Create table on Supabase
 
-Add these in Vercel Project Settings -> Environment Variables:
+Open Supabase SQL Editor and run `supabase_init.sql`.
 
-- `INGEST_API_KEY` = your secret key for local collector
-- `UPSTASH_REDIS_REST_URL` (from Upstash Redis integration)
-- `UPSTASH_REDIS_REST_TOKEN` (from Upstash Redis integration)
+## 2) Required env vars on Vercel
 
-> If your project exposes KV vars (`KV_REST_API_URL/TOKEN`) this app also supports them.
+- `INGEST_API_KEY` = secret key for local collector
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
 
-## 2) Deploy
+(Optional, public client)
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+## 3) Deploy
 
 ```bash
 npm install
@@ -25,9 +29,7 @@ npm run build
 vercel --prod
 ```
 
-## 3) Run local collector on your PC
-
-Use PowerShell script:
+## 4) Run local collector on your PC
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\collector_power_to_vercel.ps1 `
@@ -40,8 +42,8 @@ powershell -ExecutionPolicy Bypass -File .\collector_power_to_vercel.ps1 `
   -IntervalSec 10
 ```
 
-## 4) Notes
+## 5) Notes
 
 - Vercel app cannot read your physical PC directly.
-- Data is pushed from your PC collector -> Vercel API -> Upstash Redis.
+- Data is pushed from your PC collector -> Vercel API -> Supabase.
 - For more accuracy, replace estimated watt with smart plug/watt meter readings.

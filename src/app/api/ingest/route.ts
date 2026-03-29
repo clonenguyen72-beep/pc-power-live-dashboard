@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getRedis } from "@/lib/redis";
-
-const LATEST_KEY = "pc_power:latest";
-const HISTORY_KEY = "pc_power:history";
+import { getSupabase } from "@/lib/supabase";
 
 export async function POST(req: NextRequest) {
   try {
-    const apiKey = process.env.INGEST_API_KEY;
-    const given = req.headers.get("x-api-key") || "";
+    const apiKey = (process.env.INGEST_API_KEY || "").trim();
+    const given = (req.headers.get("x-api-key") || "").trim();
 
     if (!apiKey) {
       return NextResponse.json(
@@ -25,20 +22,22 @@ export async function POST(req: NextRequest) {
 
     const payload = {
       time: now,
-      uptimeHours: Number(body.uptimeHours ?? 0),
-      cpuPercent: Number(body.cpuPercent ?? 0),
-      realtimeEstimatedW: Number(body.realtimeEstimatedW ?? 0),
-      avgWFromBoot: Number(body.avgWFromBoot ?? 0),
-      estimatedKwhFromBoot: Number(body.estimatedKwhFromBoot ?? 0),
-      estimatedCostFromBootVND: Number(body.estimatedCostFromBootVND ?? 0),
-      ratePerKwhVND: Number(body.ratePerKwhVND ?? 0),
+      uptime_hours: Number(body.uptimeHours ?? 0),
+      cpu_percent: Number(body.cpuPercent ?? 0),
+      realtime_estimated_w: Number(body.realtimeEstimatedW ?? 0),
+      avg_w_from_boot: Number(body.avgWFromBoot ?? 0),
+      estimated_kwh_from_boot: Number(body.estimatedKwhFromBoot ?? 0),
+      estimated_cost_from_boot_vnd: Number(body.estimatedCostFromBootVND ?? 0),
+      rate_per_kwh_vnd: Number(body.ratePerKwhVND ?? 0),
       host: String(body.host ?? "NamPcServer"),
     };
 
-    const redis = getRedis();
-    await redis.set(LATEST_KEY, payload);
-    await redis.lpush(HISTORY_KEY, JSON.stringify(payload));
-    await redis.ltrim(HISTORY_KEY, 0, 299);
+    const supabase: any = getSupabase();
+    const { error } = await supabase.from("pc_power_metrics").insert(payload);
+
+    if (error) {
+      return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+    }
 
     return NextResponse.json({ ok: true, savedAt: now });
   } catch (e) {
