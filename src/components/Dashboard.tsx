@@ -1,4 +1,4 @@
-﻿// @ts-nocheck
+// @ts-nocheck
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
@@ -199,7 +199,7 @@ function ElectricityBillPanel() {
   const monthProgress = (billData.currentDay / billData.daysInMonth) * 100;
   const diffPct = ((billData.forecastKwh - billData.lastMonthKwh) / billData.lastMonthKwh) * 100;
   const isDown = diffPct < 0;
-  const fmt = (n: number) => n.toLocaleString("vi-VN") + " Ä‘";
+  const fmt = (n: number) => n.toLocaleString("vi-VN") + " VND";
 
   return (
     <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
@@ -210,13 +210,13 @@ function ElectricityBillPanel() {
             <Receipt className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-white">Tá»•ng Tiá»n Äiá»‡n</h3>
-            <p className="text-xs text-slate-400">GiÃ¡ Ä‘iá»‡n: {RATE_PER_KWH.toLocaleString("vi-VN")} Ä‘/kWh</p>
+            <h3 className="text-lg font-semibold text-white">Tong tien dien</h3>
+            <p className="text-xs text-slate-400">Gia dien: {RATE_PER_KWH.toLocaleString("vi-VN")} VND/kWh</p>
           </div>
         </div>
         <div className={`flex items-center gap-1 text-sm px-3 py-1 rounded-full border ${isDown ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-rose-500/10 text-rose-400 border-rose-500/20"}`}>
           {isDown ? <ArrowDown className="w-3.5 h-3.5" /> : <ArrowUp className="w-3.5 h-3.5" />}
-          {Math.abs(diffPct).toFixed(1)}% so vá»›i thÃ¡ng trÆ°á»›c
+          {Math.abs(diffPct).toFixed(1)}% so voi thang truoc
         </div>
       </div>
 
@@ -226,13 +226,13 @@ function ElectricityBillPanel() {
           <div className="flex items-end justify-between flex-wrap gap-4 mb-5">
             <div>
               <p className="text-xs text-slate-500 mb-1 flex items-center gap-1">
-                <Lightbulb className="w-3 h-3" /> Dá»± bÃ¡o cuá»‘i thÃ¡ng {new Date().getMonth() + 1}
+                <Lightbulb className="w-3 h-3" /> Du bao cuoi thang {new Date().getMonth() + 1}
               </p>
               <div className="text-4xl font-bold text-emerald-400">{fmt(forecastCost)}</div>
-              <p className="text-sm text-slate-400 mt-1">{billData.forecastKwh} kWh Æ°á»›c tÃ­nh</p>
+              <p className="text-sm text-slate-400 mt-1">{billData.forecastKwh} kWh uoc tinh</p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-slate-500 mb-1">ThÃ¡ng trÆ°á»›c</p>
+              <p className="text-xs text-slate-500 mb-1">Thang truoc</p>
               <div className="text-2xl font-semibold text-slate-400">{fmt(lastMonthCost)}</div>
               <p className="text-xs text-slate-500 mt-1">{billData.lastMonthKwh} kWh</p>
             </div>
@@ -240,8 +240,8 @@ function ElectricityBillPanel() {
           {/* Monthly progress bar */}
           <div>
             <div className="flex justify-between text-xs text-slate-500 mb-1.5">
-              <span>NgÃ y {billData.currentDay} / {billData.daysInMonth} trong thÃ¡ng</span>
-              <span>{monthProgress.toFixed(0)}% Ä‘Ã£ qua</span>
+              <span>Ngay {billData.currentDay} / {billData.daysInMonth} trong thang</span>
+              <span>{monthProgress.toFixed(0)}% da qua</span>
             </div>
             <div className="h-2.5 bg-slate-700 rounded-full overflow-hidden">
               <div
@@ -364,17 +364,17 @@ export function Dashboard() {
   };
 
   const navItems = [
-    { key: "overview", label: "Tá»•ng quan", icon: Activity },
-    { key: "hardware", label: "Pháº§n cá»©ng", icon: Cpu },
-    { key: "power", label: "Äiá»‡n nÄƒng", icon: Zap },
-    { key: "settings", label: "CÃ i Ä‘áº·t", icon: Settings },
+    { key: "overview", label: "Tong quan", icon: Activity },
+    { key: "hardware", label: "Phan cung", icon: Cpu },
+    { key: "power", label: "Dien nang", icon: Zap },
+    { key: "settings", label: "Cai dat", icon: Settings },
   ] as const;
 
   const pageTitles: Record<string, string> = {
-    overview: "Báº£ng Äiá»u Khiá»ƒn",
-    hardware: "Pháº§n Cá»©ng",
-    power: "Äiá»‡n NÄƒng",
-    settings: "CÃ i Äáº·t",
+    overview: "Bang dieu khien",
+    hardware: "Phan cung",
+    power: "Dien nang",
+    settings: "Cai dat",
   };
 
   return (
@@ -457,7 +457,7 @@ export function Dashboard() {
           {page === "settings" && (
             <div className="flex flex-col items-center justify-center h-full text-slate-500">
               <Settings className="w-12 h-12 mb-3 opacity-30" />
-              <p className="text-lg">CÃ i Ä‘áº·t Ä‘ang phÃ¡t triá»ƒn...</p>
+              <p className="text-lg">Cai dat dang phat trien...</p>
             </div>
           )}
         </div>
@@ -469,7 +469,7 @@ export function Dashboard() {
 function OverviewPage({ uptime, formatUptime, latest }: { uptime: number; formatUptime: (totalSeconds: number) => string; latest: any }) {
   const currentPower = latest?.realtimeEstimatedW ? `${Number(latest.realtimeEstimatedW).toFixed(1)} W` : '---';
   const monthKwh = latest?.estimatedKwhFromBoot ? `${Number(latest.estimatedKwhFromBoot).toFixed(3)} kWh` : '---';
-  const costVnd = latest?.estimatedCostFromBootVND ? `${Number(latest.estimatedCostFromBootVND).toLocaleString('vi-VN')} đ` : '---';
+  const costVnd = latest?.estimatedCostFromBootVND ? `${Number(latest.estimatedCostFromBootVND).toLocaleString('vi-VN')} VND` : '---';
 
   return (
     <div className="flex-1 overflow-y-auto p-6 lg:p-10 scrollbar-hide">
@@ -478,30 +478,30 @@ function OverviewPage({ uptime, formatUptime, latest }: { uptime: number; format
         {/* Top Metrics Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <MetricCard 
-            title="Thá»i Gian Hoáº¡t Äá»™ng" 
+            title="Thoi gian hoat dong" 
             value={formatUptime(uptime)}
-            subtitle="Ká»ƒ tá»« láº§n khá»Ÿi Ä‘á»™ng cuá»‘i"
+            subtitle="Ke tu lan khoi dong cuoi"
             icon={Clock}
             colorClass="bg-blue-500 text-blue-400"
           />
           <MetricCard 
-            title="CÃ´ng Suáº¥t Hiá»‡n Táº¡i" 
+            title="Cong suat hien tai" 
             value={currentPower}
             subtitle="Cong suat realtime tu may local"
             icon={Zap}
             colorClass="bg-amber-500 text-amber-400"
           />
           <MetricCard 
-            title="Sá»‘ Äiá»‡n TiÃªu Thá»¥" 
+            title="So dien tieu thu" 
             value={monthKwh}
             subtitle="kWh tinh tu luc may boot"
             icon={TrendingUp}
             colorClass="bg-indigo-500 text-indigo-400"
           />
           <MetricCard 
-            title="Tiá»n Äiá»‡n Æ¯á»›c TÃ­nh" 
+            title="Tien dien uoc tinh" 
             value={costVnd}
-            subtitle={`Tinh theo gia ${latest?.ratePerKwhVND ? Number(latest.ratePerKwhVND).toLocaleString('vi-VN') : '---'} đ/kWh`}
+            subtitle={`Tinh theo gia ${latest?.ratePerKwhVND ? Number(latest.ratePerKwhVND).toLocaleString('vi-VN') : '---'} VND/kWh`}
             icon={DollarSign}
             colorClass="bg-emerald-500 text-emerald-400"
           />
@@ -514,13 +514,13 @@ function OverviewPage({ uptime, formatUptime, latest }: { uptime: number; format
           <div className="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h3 className="text-lg font-semibold text-white">Biá»ƒu Äá»“ TiÃªu Thá»¥ Äiá»‡n</h3>
-                <p className="text-sm text-slate-400">Äiá»‡n nÄƒng sá»­ dá»¥ng trong 24 giá» qua (W)</p>
+                <h3 className="text-lg font-semibold text-white">Bieu do tieu thu dien</h3>
+                <p className="text-sm text-slate-400">Dien nang su dung trong 24 gio qua (W)</p>
               </div>
               <select className="bg-slate-900 border border-slate-700 text-slate-300 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2">
-                <option>HÃ´m nay</option>
-                <option>7 ngÃ y qua</option>
-                <option>ThÃ¡ng nÃ y</option>
+                <option>Hom nay</option>
+                <option>7 ngay qua</option>
+                <option>Thang nay</option>
               </select>
             </div>
             <div className="h-72 w-full">
@@ -530,8 +530,8 @@ function OverviewPage({ uptime, formatUptime, latest }: { uptime: number; format
 
           {/* Hardware Monitoring */}
           <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm flex flex-col">
-            <h3 className="text-lg font-semibold text-white mb-1">Tráº¡ng ThÃ¡i Pháº§n Cá»©ng</h3>
-            <p className="text-sm text-slate-400 mb-6">ThÃ´ng sá»‘ há»‡ thá»‘ng theo thá»i gian thá»±c</p>
+            <h3 className="text-lg font-semibold text-white mb-1">Trang thai phan cung</h3>
+            <p className="text-sm text-slate-400 mb-6">Thong so he thong theo thoi gian thuc</p>
             
             <div className="space-y-6 flex-1">
               {/* CPU */}
@@ -579,8 +579,7 @@ function OverviewPage({ uptime, formatUptime, latest }: { uptime: number; format
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <div className="flex items-center gap-2 text-white font-medium">
-                    <HardDrive className="w-4 h-4 text-purple-400" /> LÆ°u Trá»¯
-                  </div>
+                    <HardDrive className="w-4 h-4 text-purple-400" /> Luu tru</div>
                 </div>
                 <div className="text-xs text-slate-500 mb-2">WD Black SN850X NVMe (C:)</div>
                 <ProgressBar label="Space" value={450} max={1000} unit="GB" color="bg-purple-500" />
@@ -596,7 +595,7 @@ function OverviewPage({ uptime, formatUptime, latest }: { uptime: number; format
               <Cpu className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-slate-300 font-medium">Äiá»‡n Ã¡p CPU</h4>
+              <h4 className="text-slate-300 font-medium">Dien ap CPU</h4>
               <div className="text-2xl font-semibold text-white mt-1">1.25 V</div>
               <p className="text-xs text-slate-500 mt-1">BÃ¬nh thÆ°á»ng</p>
             </div>
@@ -607,7 +606,7 @@ function OverviewPage({ uptime, formatUptime, latest }: { uptime: number; format
               <Monitor className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-slate-300 font-medium">Äiá»‡n Ã¡p GPU</h4>
+              <h4 className="text-slate-300 font-medium">Dien ap GPU</h4>
               <div className="text-2xl font-semibold text-white mt-1">1.05 V</div>
               <p className="text-xs text-slate-500 mt-1">BÃ¬nh thÆ°á»ng</p>
             </div>
@@ -618,7 +617,7 @@ function OverviewPage({ uptime, formatUptime, latest }: { uptime: number; format
               <Zap className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-slate-300 font-medium">Hiá»‡u suáº¥t Nguá»“n (PSU)</h4>
+              <h4 className="text-slate-300 font-medium">Hieu suat nguon (PSU)</h4>
               <div className="text-2xl font-semibold text-white mt-1">92 %</div>
               <p className="text-xs text-slate-500 mt-1">80 Plus Platinum</p>
             </div>
@@ -631,6 +630,10 @@ function OverviewPage({ uptime, formatUptime, latest }: { uptime: number; format
     </div>
   );
 }
+
+
+
+
 
 
 
