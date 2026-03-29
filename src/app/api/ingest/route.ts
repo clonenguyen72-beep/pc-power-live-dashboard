@@ -30,6 +30,13 @@ export async function POST(req: NextRequest) {
       estimated_cost_from_boot_vnd: Number(body.estimatedCostFromBootVND ?? 0),
       rate_per_kwh_vnd: Number(body.ratePerKwhVND ?? 0),
       host: String(body.host ?? "NamPcServer"),
+      cpu_name: String(body.cpuName ?? ""),
+      gpu_name: String(body.gpuName ?? ""),
+      ram_total_gb: Number(body.ramTotalGB ?? 0),
+      ram_used_gb: Number(body.ramUsedGB ?? 0),
+      disk_total_gb: Number(body.diskTotalGB ?? 0),
+      disk_free_gb: Number(body.diskFreeGB ?? 0),
+      os_name: String(body.osName ?? ""),
     };
 
     const supabase: any = getSupabase();

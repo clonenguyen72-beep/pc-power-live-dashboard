@@ -15,6 +15,39 @@ function Get-UptimeHours {
     return [math]::Round($uptime.TotalHours, 4)
 }
 
+function Get-HardwareInfo {
+    $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1 Name
+    $gpu = Get-CimInstance Win32_VideoController | Select-Object -First 1 Name
+    $os = Get-CimInstance Win32_OperatingSystem
+    $cs = Get-CimInstance Win32_ComputerSystem
+    $disk = Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object -First 1 Size,FreeSpace
+
+    $ramTotalGB = 0
+    $ramUsedGB = 0
+    if ($cs.TotalPhysicalMemory) {
+        $ramTotalGB = [math]::Round(($cs.TotalPhysicalMemory / 1GB), 2)
+    }
+    if ($os.TotalVisibleMemorySize -and $os.FreePhysicalMemory) {
+        $usedKB = [double]$os.TotalVisibleMemorySize - [double]$os.FreePhysicalMemory
+        $ramUsedGB = [math]::Round(($usedKB / 1MB), 2)
+    }
+
+    $diskTotalGB = 0
+    $diskFreeGB = 0
+    if ($disk.Size) { $diskTotalGB = [math]::Round(($disk.Size / 1GB), 2) }
+    if ($disk.FreeSpace) { $diskFreeGB = [math]::Round(($disk.FreeSpace / 1GB), 2) }
+
+    return [pscustomobject]@{
+        CpuName = $cpu.Name
+        GpuName = $gpu.Name
+        OsName = $os.Caption
+        RamTotalGB = $ramTotalGB
+        RamUsedGB = $ramUsedGB
+        DiskTotalGB = $diskTotalGB
+        DiskFreeGB = $diskFreeGB
+    }
+}
+
 function Get-CpuPercent {
     try {
         $sample = (Get-Counter '\Processor(_Total)\% Processor Time').CounterSamples[0].CookedValue
@@ -49,6 +82,8 @@ while ($true) {
     $kwhFromBoot = Calc-Kwh -watt $AvgWFromBoot -hours $uptimeH
     $costFromBoot = Calc-Cost -kwh $kwhFromBoot -rate $RatePerKwh
 
+    $hw = Get-HardwareInfo
+
     $payload = @{
         uptimeHours = $uptimeH
         cpuPercent = $cpu
@@ -58,6 +93,13 @@ while ($true) {
         estimatedCostFromBootVND = $costFromBoot
         ratePerKwhVND = $RatePerKwh
         host = $env:COMPUTERNAME
+        cpuName = $hw.CpuName
+        gpuName = $hw.GpuName
+        osName = $hw.OsName
+        ramTotalGB = $hw.RamTotalGB
+        ramUsedGB = $hw.RamUsedGB
+        diskTotalGB = $hw.DiskTotalGB
+        diskFreeGB = $hw.DiskFreeGB
     } | ConvertTo-Json
 
     try {

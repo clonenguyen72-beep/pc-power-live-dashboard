@@ -12,6 +12,13 @@ function mapRow(r: any) {
     estimatedCostFromBootVND: Number(r.estimated_cost_from_boot_vnd ?? 0),
     ratePerKwhVND: Number(r.rate_per_kwh_vnd ?? 0),
     host: String(r.host ?? ""),
+    cpuName: String(r.cpu_name ?? ""),
+    gpuName: String(r.gpu_name ?? ""),
+    ramTotalGB: Number(r.ram_total_gb ?? 0),
+    ramUsedGB: Number(r.ram_used_gb ?? 0),
+    diskTotalGB: Number(r.disk_total_gb ?? 0),
+    diskFreeGB: Number(r.disk_free_gb ?? 0),
+    osName: String(r.os_name ?? ""),
   };
 }
 
@@ -21,7 +28,7 @@ export async function GET() {
 
     const { data, error } = await supabase
       .from("pc_power_metrics")
-      .select("time,uptime_hours,cpu_percent,realtime_estimated_w,avg_w_from_boot,estimated_kwh_from_boot,estimated_cost_from_boot_vnd,rate_per_kwh_vnd,host")
+      .select("time,uptime_hours,cpu_percent,realtime_estimated_w,avg_w_from_boot,estimated_kwh_from_boot,estimated_cost_from_boot_vnd,rate_per_kwh_vnd,host,cpu_name,gpu_name,ram_total_gb,ram_used_gb,disk_total_gb,disk_free_gb,os_name")
       .order("time", { ascending: false })
       .limit(100);
 
