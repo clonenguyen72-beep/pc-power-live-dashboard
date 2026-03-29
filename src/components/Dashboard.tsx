@@ -325,15 +325,35 @@ const ProgressBar = ({ label, value, max, unit, color }) => {
 
 export function Dashboard() {
   const [uptime, setUptime] = useState(0);
+  const [latest, setLatest] = useState<any>(null);
   const [page, setPage] = useState<"overview" | "hardware" | "power" | "settings">("overview");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    setUptime(5 * 3600 + 23 * 60 + 15);
-    const interval = setInterval(() => {
+    let t: any;
+    const load = async () => {
+      try {
+        const res = await fetch('/api/metrics', { cache: 'no-store' });
+        const data = await res.json();
+        if (data?.ok && data?.latest) {
+          setLatest(data.latest);
+          if (typeof data.latest.uptimeHours === 'number') {
+            setUptime(Math.floor(data.latest.uptimeHours * 3600));
+          }
+        }
+      } catch {}
+      t = setTimeout(load, 5000);
+    };
+    load();
+
+    const tick = setInterval(() => {
       setUptime(prev => prev + 1);
     }, 1000);
-    return () => clearInterval(interval);
+
+    return () => {
+      clearTimeout(t);
+      clearInterval(tick);
+    };
   }, []);
 
   const formatUptime = (totalSeconds: number) => {
@@ -395,7 +415,7 @@ export function Dashboard() {
           <div className="bg-slate-900 rounded-lg p-4 border border-slate-800 flex items-center gap-3">
             <Server className="w-8 h-8 text-slate-500" />
             <div>
-              <div className="text-sm font-medium text-white">GAMING-RIG-99</div>
+              <div className="text-sm font-medium text-white">{latest?.host || 'NAM-PC'}</div>
               <div className="text-xs text-emerald-400 flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Online
               </div>
@@ -431,7 +451,7 @@ export function Dashboard() {
 
         {/* Page Content */}
         <div className="flex-1 overflow-y-auto">
-          {page === "overview" && <OverviewPage uptime={uptime} formatUptime={formatUptime} />}
+          {page === "overview" && <OverviewPage uptime={uptime} formatUptime={formatUptime} latest={latest} />}
           {page === "hardware" && <HardwarePage />}
           {page === "power" && <PowerPage />}
           {page === "settings" && (
@@ -446,7 +466,11 @@ export function Dashboard() {
   );
 }
 
-function OverviewPage({ uptime, formatUptime }: { uptime: number; formatUptime: (totalSeconds: number) => string }) {
+function OverviewPage({ uptime, formatUptime, latest }: { uptime: number; formatUptime: (totalSeconds: number) => string; latest: any }) {
+  const currentPower = latest?.realtimeEstimatedW ? `${Number(latest.realtimeEstimatedW).toFixed(1)} W` : '---';
+  const monthKwh = latest?.estimatedKwhFromBoot ? `${Number(latest.estimatedKwhFromBoot).toFixed(3)} kWh` : '---';
+  const costVnd = latest?.estimatedCostFromBootVND ? `${Number(latest.estimatedCostFromBootVND).toLocaleString('vi-VN')} đ` : '---';
+
   return (
     <div className="flex-1 overflow-y-auto p-6 lg:p-10 scrollbar-hide">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -462,22 +486,22 @@ function OverviewPage({ uptime, formatUptime }: { uptime: number; formatUptime: 
           />
           <MetricCard 
             title="CÃ´ng Suáº¥t Hiá»‡n Táº¡i" 
-            value="452 W"
-            subtitle="Äá»‰nh Ä‘iá»ƒm hÃ´m nay: 780W"
+            value={currentPower}
+            subtitle="Cong suat realtime tu may local"
             icon={Zap}
             colorClass="bg-amber-500 text-amber-400"
           />
           <MetricCard 
             title="Sá»‘ Äiá»‡n TiÃªu Thá»¥" 
-            value="14.5 kWh"
-            subtitle="Tá»•ng cá»™ng trong thÃ¡ng nÃ y"
+            value={monthKwh}
+            subtitle="kWh tinh tu luc may boot"
             icon={TrendingUp}
             colorClass="bg-indigo-500 text-indigo-400"
           />
           <MetricCard 
             title="Tiá»n Äiá»‡n Æ¯á»›c TÃ­nh" 
-            value="43,500 Ä‘"
-            subtitle="TÃ­nh theo giÃ¡ 3,000Ä‘/kWh"
+            value={costVnd}
+            subtitle={`Tinh theo gia ${latest?.ratePerKwhVND ? Number(latest.ratePerKwhVND).toLocaleString('vi-VN') : '---'} đ/kWh`}
             icon={DollarSign}
             colorClass="bg-emerald-500 text-emerald-400"
           />
