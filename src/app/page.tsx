@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import styles from "./page.module.css";
 
 type Metric = {
   time: string;
@@ -48,58 +49,84 @@ export default function Home() {
     return { kwh, vnd };
   }, [latest]);
 
-  return (
-    <main style={{ maxWidth: 1000, margin: "0 auto", padding: 24, fontFamily: "Inter, Arial, sans-serif" }}>
-      <h1>PC Power Live Dashboard</h1>
-      <p>Theo doi thong so dien nang thoi gian thuc tu may tinh cua ban.</p>
+  const cpu = latest?.cpuPercent ?? 0;
+  const watt = latest?.realtimeEstimatedW ?? 0;
 
-      {error && <p style={{ color: "crimson" }}>Loi: {error}</p>}
+  return (
+    <main className={styles.wrapper}>
+      <section className={styles.headerCard}>
+        <div>
+          <h1 className={styles.title}>Computer Control Dashboard</h1>
+          <p className={styles.subtitle}>Theo doi dien nang may tinh theo thoi gian thuc</p>
+          <p className={styles.meta}>Host: <b>{latest?.host || "Dang cho du lieu"}</b></p>
+          <p className={styles.meta}>Last update: <b>{latest ? new Date(latest.time).toLocaleString() : "--"}</b></p>
+        </div>
+        <div className={styles.badgeLive}>LIVE</div>
+      </section>
+
+      {error && <div className={styles.error}>Loi ket noi: {error}</div>}
 
       {!latest ? (
-        <p>Dang cho du lieu... (hay chay collector tren may local)</p>
+        <section className={styles.panel}>Dang cho du lieu tu local collector...</section>
       ) : (
         <>
-          <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 12, margin: "16px 0" }}>
-            <Card title="Host" value={latest.host} />
-            <Card title="Cap nhat luc" value={new Date(latest.time).toLocaleString()} />
-            <Card title="Uptime" value={`${latest.uptimeHours.toFixed(2)} h`} />
-            <Card title="CPU" value={`${latest.cpuPercent.toFixed(2)} %`} />
-            <Card title="Cong suat realtime" value={`${latest.realtimeEstimatedW.toFixed(2)} W`} />
-            <Card title="kWh tu luc boot" value={`${latest.estimatedKwhFromBoot.toFixed(3)} kWh`} />
-            <Card title="Tien dien tu luc boot" value={`${latest.estimatedCostFromBootVND.toLocaleString("vi-VN")} VND`} />
-            <Card title="Gia dien" value={`${latest.ratePerKwhVND.toLocaleString("vi-VN")} VND/kWh`} />
+          <section className={styles.statsGrid}>
+            <MetricCard label="Uptime" value={`${latest.uptimeHours.toFixed(2)} h`} />
+            <MetricCard label="CPU Load" value={`${latest.cpuPercent.toFixed(2)} %`} />
+            <MetricCard label="Realtime Power" value={`${latest.realtimeEstimatedW.toFixed(2)} W`} />
+            <MetricCard label="kWh since boot" value={`${latest.estimatedKwhFromBoot.toFixed(3)} kWh`} />
+            <MetricCard label="Cost since boot" value={`${latest.estimatedCostFromBootVND.toLocaleString("vi-VN")} VND`} />
+            <MetricCard label="Rate" value={`${latest.ratePerKwhVND.toLocaleString("vi-VN")} VND/kWh`} />
           </section>
 
-          {dailyEstimate && (
-            <section style={{ border: "1px solid #ddd", borderRadius: 12, padding: 12, marginBottom: 16 }}>
-              <h3>Uoc tinh neu giu muc tai hien tai trong 24h</h3>
-              <p>{dailyEstimate.kwh.toFixed(3)} kWh/ngay ~ {dailyEstimate.vnd.toLocaleString("vi-VN")} VND/ngay</p>
-            </section>
-          )}
+          <section className={styles.dualGrid}>
+            <div className={styles.panel}>
+              <h3>System Load</h3>
+              <Progress label="CPU" value={cpu} max={100} suffix="%" />
+              <Progress label="Power" value={watt} max={300} suffix="W" />
+              {dailyEstimate && (
+                <div className={styles.estimateBox}>
+                  <p>Uoc tinh 24h neu giu tai hien tai</p>
+                  <b>{dailyEstimate.kwh.toFixed(3)} kWh / ngay</b>
+                  <b>{dailyEstimate.vnd.toLocaleString("vi-VN")} VND / ngay</b>
+                </div>
+              )}
+            </div>
 
-          <section>
-            <h3>Lich su gan day</h3>
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <div className={styles.panel}>
+              <h3>Quick Summary</h3>
+              <ul className={styles.summaryList}>
+                <li>May dang hoat dong on dinh.</li>
+                <li>Collector cap nhat du lieu moi 5 giay.</li>
+                <li>So lieu la uoc tinh theo cong suat trung binh cau hinh.</li>
+                <li>De chinh xac hon, dung o cam do dien thuc te.</li>
+              </ul>
+            </div>
+          </section>
+
+          <section className={styles.panel}>
+            <h3>History (20 ban ghi moi nhat)</h3>
+            <div className={styles.tableWrap}>
+              <table className={styles.table}>
                 <thead>
                   <tr>
-                    <Th>Time</Th>
-                    <Th>CPU %</Th>
-                    <Th>W</Th>
-                    <Th>Uptime (h)</Th>
-                    <Th>kWh boot</Th>
-                    <Th>Cost boot (VND)</Th>
+                    <th>Time</th>
+                    <th>CPU %</th>
+                    <th>W</th>
+                    <th>Uptime (h)</th>
+                    <th>kWh boot</th>
+                    <th>Cost boot (VND)</th>
                   </tr>
                 </thead>
                 <tbody>
                   {history.slice(0, 20).map((x, i) => (
                     <tr key={i}>
-                      <Td>{new Date(x.time).toLocaleTimeString()}</Td>
-                      <Td>{x.cpuPercent?.toFixed?.(2)}</Td>
-                      <Td>{x.realtimeEstimatedW?.toFixed?.(2)}</Td>
-                      <Td>{x.uptimeHours?.toFixed?.(2)}</Td>
-                      <Td>{x.estimatedKwhFromBoot?.toFixed?.(3)}</Td>
-                      <Td>{Number(x.estimatedCostFromBootVND || 0).toLocaleString("vi-VN")}</Td>
+                      <td>{new Date(x.time).toLocaleTimeString()}</td>
+                      <td>{x.cpuPercent?.toFixed?.(2)}</td>
+                      <td>{x.realtimeEstimatedW?.toFixed?.(2)}</td>
+                      <td>{x.uptimeHours?.toFixed?.(2)}</td>
+                      <td>{x.estimatedKwhFromBoot?.toFixed?.(3)}</td>
+                      <td>{Number(x.estimatedCostFromBootVND || 0).toLocaleString("vi-VN")}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -112,19 +139,26 @@ export default function Home() {
   );
 }
 
-function Card({ title, value }: { title: string; value: string }) {
+function MetricCard({ label, value }: { label: string; value: string }) {
   return (
-    <div style={{ border: "1px solid #ddd", borderRadius: 12, padding: 12, background: "#fff" }}>
-      <div style={{ fontSize: 13, color: "#64748b" }}>{title}</div>
-      <div style={{ fontSize: 20, fontWeight: 700, marginTop: 6 }}>{value}</div>
-    </div>
+    <article className={styles.metricCard}>
+      <p className={styles.metricLabel}>{label}</p>
+      <p className={styles.metricValue}>{value}</p>
+    </article>
   );
 }
 
-function Th({ children }: { children: React.ReactNode }) {
-  return <th style={{ border: "1px solid #ddd", padding: 8, background: "#f8fafc", textAlign: "left" }}>{children}</th>;
-}
-
-function Td({ children }: { children: React.ReactNode }) {
-  return <td style={{ border: "1px solid #ddd", padding: 8 }}>{children}</td>;
+function Progress({ label, value, max, suffix }: { label: string; value: number; max: number; suffix: string }) {
+  const pct = Math.min(100, Math.max(0, (value / max) * 100));
+  return (
+    <div className={styles.progressRow}>
+      <div className={styles.progressHead}>
+        <span>{label}</span>
+        <b>{value.toFixed(2)} {suffix}</b>
+      </div>
+      <div className={styles.progressTrack}>
+        <div className={styles.progressFill} style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
 }
