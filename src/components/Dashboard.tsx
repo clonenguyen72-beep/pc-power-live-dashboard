@@ -53,12 +53,24 @@ function SvgAreaChart({ data }: { data: ChartPoint[] }) {
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+
+    setDims({ width: el.clientWidth || 600, height: el.clientHeight || 288 });
+
+    if (typeof window === "undefined" || !("ResizeObserver" in window)) {
+      const onResize = () => {
+        if (!el) return;
+        setDims({ width: el.clientWidth || 600, height: el.clientHeight || 288 });
+      };
+      window.addEventListener("resize", onResize);
+      return () => window.removeEventListener("resize", onResize);
+    }
+
     const ro = new ResizeObserver((entries) => {
-      const { width, height } = entries[0].contentRect;
-      setDims({ width, height });
+      const rect = entries?.[0]?.contentRect;
+      if (!rect) return;
+      setDims({ width: rect.width || 600, height: rect.height || 288 });
     });
     ro.observe(el);
-    setDims({ width: el.clientWidth, height: el.clientHeight });
     return () => ro.disconnect();
   }, []);
 
