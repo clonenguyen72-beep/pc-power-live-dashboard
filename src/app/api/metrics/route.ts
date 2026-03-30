@@ -33,7 +33,10 @@ export async function GET() {
       .limit(100);
 
     if (error) {
-      return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+      return NextResponse.json(
+        { ok: false, error: `Không tải được dữ liệu: ${error.message}` },
+        { status: 500 }
+      );
     }
 
     const rows = (data || []).map(mapRow);
@@ -41,8 +44,13 @@ export async function GET() {
 
     return NextResponse.json({ ok: true, latest, history: rows });
   } catch (e) {
+    const msg = e instanceof Error ? e.message : "Unknown error";
+    const friendly =
+      msg.includes("SUPABASE_URL") || msg.includes("SUPABASE_SERVICE_ROLE_KEY")
+        ? "Thiếu cấu hình Supabase (SUPABASE_URL hoặc SUPABASE_SERVICE_ROLE_KEY)."
+        : "Đã xảy ra lỗi khi truy vấn dữ liệu Supabase.";
     return NextResponse.json(
-      { ok: false, error: e instanceof Error ? e.message : "Unknown error" },
+      { ok: false, error: friendly },
       { status: 500 }
     );
   }

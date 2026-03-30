@@ -8,13 +8,13 @@ export async function POST(req: NextRequest) {
 
     if (!apiKey) {
       return NextResponse.json(
-        { ok: false, error: "INGEST_API_KEY is missing on server" },
+        { ok: false, error: "Thiếu biến môi trường INGEST_API_KEY trên server" },
         { status: 500 }
       );
     }
 
     if (given !== apiKey) {
-      return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ ok: false, error: "Không được phép (sai API key)" }, { status: 401 });
     }
 
     const body = await req.json();
@@ -43,13 +43,21 @@ export async function POST(req: NextRequest) {
     const { error } = await supabase.from("pc_power_metrics").insert(payload);
 
     if (error) {
-      return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+      return NextResponse.json(
+        { ok: false, error: `Lưu dữ liệu thất bại: ${error.message}` },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ ok: true, savedAt: now });
   } catch (e) {
+    const msg = e instanceof Error ? e.message : "Unknown error";
+    const friendly =
+      msg.includes("SUPABASE_URL") || msg.includes("SUPABASE_SERVICE_ROLE_KEY")
+        ? "Thiếu cấu hình Supabase (SUPABASE_URL hoặc SUPABASE_SERVICE_ROLE_KEY)."
+        : msg;
     return NextResponse.json(
-      { ok: false, error: e instanceof Error ? e.message : "Unknown error" },
+      { ok: false, error: friendly === "Unknown error" ? "Đã xảy ra lỗi không xác định" : friendly },
       { status: 500 }
     );
   }
