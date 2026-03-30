@@ -1,7 +1,7 @@
-// @ts-nocheck
+﻿// @ts-nocheck
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity,
   Cpu,
@@ -77,7 +77,7 @@ function SvgAreaChart({ data }: { data: ChartPoint[] }) {
   if (!data.length) {
     return (
       <div ref={containerRef} className="w-full h-full flex items-center justify-center text-slate-500 text-sm">
-        Chưa có dữ liệu
+        ChÆ°a cÃ³ dá»¯ liá»‡u
       </div>
     );
   }
@@ -113,18 +113,15 @@ function SvgAreaChart({ data }: { data: ChartPoint[] }) {
     y: padT + H - f * H,
   }));
 
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<SVGSVGElement>) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const mx = e.clientX - rect.left - padL;
-      const ratio = mx / Math.max(1, W);
-      const idx = Math.round(ratio * (data.length - 1));
-      const clamped = Math.max(0, Math.min(data.length - 1, idx));
-      const pt = data[clamped];
-      setTooltip({ x: xOf(clamped), y: yOf(pt.power), point: pt });
-    },
-    [W, data]
-  );
+  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const mx = e.clientX - rect.left - padL;
+    const ratio = mx / Math.max(1, W);
+    const idx = Math.round(ratio * (data.length - 1));
+    const clamped = Math.max(0, Math.min(data.length - 1, idx));
+    const pt = data[clamped];
+    setTooltip({ x: xOf(clamped), y: yOf(pt.power), point: pt });
+  };
 
   return (
     <div ref={containerRef} className="w-full h-full relative select-none">
@@ -259,8 +256,8 @@ function ElectricityBillPanel({ latest, history }: { latest: Metric | null; hist
             <Receipt className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-white">Tổng quan chi phí điện</h3>
-            <p className="text-xs text-slate-400">Giá điện: {rate.toLocaleString("vi-VN")} VND/kWh</p>
+            <h3 className="text-lg font-semibold text-white">Tá»•ng quan chi phÃ­ Ä‘iá»‡n</h3>
+            <p className="text-xs text-slate-400">GiÃ¡ Ä‘iá»‡n: {rate.toLocaleString("vi-VN")} VND/kWh</p>
           </div>
         </div>
         <div
@@ -269,7 +266,7 @@ function ElectricityBillPanel({ latest, history }: { latest: Metric | null; hist
           }`}
         >
           {isDown ? <ArrowDown className="w-3.5 h-3.5" /> : <ArrowUp className="w-3.5 h-3.5" />}
-          {Math.abs(diffPct).toFixed(1)}% so với mẫu trước
+          {Math.abs(diffPct).toFixed(1)}% so vá»›i máº«u trÆ°á»›c
         </div>
       </div>
 
@@ -278,13 +275,13 @@ function ElectricityBillPanel({ latest, history }: { latest: Metric | null; hist
           <div className="flex items-end justify-between flex-wrap gap-4 mb-5">
             <div>
               <p className="text-xs text-slate-500 mb-1 flex items-center gap-1">
-                <Lightbulb className="w-3 h-3" /> Ước tính 24h theo công suất hiện tại
+                <Lightbulb className="w-3 h-3" /> Æ¯á»›c tÃ­nh 24h theo cÃ´ng suáº¥t hiá»‡n táº¡i
               </p>
               <div className="text-4xl font-bold text-emerald-400">{fmtVnd(estimatedDayCost)}</div>
-              <p className="text-sm text-slate-400 mt-1">{estimatedDayKwh.toFixed(3)} kWh/ngày (ước tính)</p>
+              <p className="text-sm text-slate-400 mt-1">{estimatedDayKwh.toFixed(3)} kWh/ngÃ y (Æ°á»›c tÃ­nh)</p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-slate-500 mb-1">Từ lúc khởi động</p>
+              <p className="text-xs text-slate-500 mb-1">Tá»« lÃºc khá»Ÿi Ä‘á»™ng</p>
               <div className="text-2xl font-semibold text-slate-300">{fmtVnd(bootCost)}</div>
               <p className="text-xs text-slate-500 mt-1">{bootKwh.toFixed(3)} kWh</p>
             </div>
@@ -292,7 +289,7 @@ function ElectricityBillPanel({ latest, history }: { latest: Metric | null; hist
 
           <div>
             <div className="flex justify-between text-xs text-slate-500 mb-1.5">
-              <span>Công suất hiện tại</span>
+              <span>CÃ´ng suáº¥t hiá»‡n táº¡i</span>
               <span>{realtimeW.toFixed(1)} W</span>
             </div>
             <div className="h-2.5 bg-slate-700 rounded-full overflow-hidden">
@@ -311,25 +308,25 @@ function ElectricityBillPanel({ latest, history }: { latest: Metric | null; hist
               <span className="text-xs text-slate-400 font-medium uppercase tracking-wide">Realtime</span>
             </div>
             <div className="text-xl font-bold text-white">{realtimeW.toFixed(1)} W</div>
-            <div className="text-xs text-slate-500 mt-1">Đọc trực tiếp từ collector</div>
+            <div className="text-xs text-slate-500 mt-1">Äá»c trá»±c tiáº¿p tá»« collector</div>
           </div>
 
           <div className="flex-1 bg-slate-900/50 border border-slate-700/40 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <CalendarDays className="w-4 h-4 text-indigo-400" />
-              <span className="text-xs text-slate-400 font-medium uppercase tracking-wide">Từ boot</span>
+              <span className="text-xs text-slate-400 font-medium uppercase tracking-wide">Tá»« boot</span>
             </div>
             <div className="text-xl font-bold text-white">{bootKwh.toFixed(3)} kWh</div>
-            <div className="text-xs text-slate-500 mt-1">Tổng điện năng tích lũy</div>
+            <div className="text-xs text-slate-500 mt-1">Tá»•ng Ä‘iá»‡n nÄƒng tÃ­ch lÅ©y</div>
           </div>
 
           <div className="flex-1 bg-slate-900/50 border border-slate-700/40 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <TrendingUp className="w-4 h-4 text-purple-400" />
-              <span className="text-xs text-slate-400 font-medium uppercase tracking-wide">Trung bình từ boot</span>
+              <span className="text-xs text-slate-400 font-medium uppercase tracking-wide">Trung bÃ¬nh tá»« boot</span>
             </div>
             <div className="text-xl font-bold text-white">{Number(latest?.avgWFromBoot ?? 0).toFixed(1)} W</div>
-            <div className="text-xs text-slate-500 mt-1">Giả lập theo công suất trung bình</div>
+            <div className="text-xs text-slate-500 mt-1">Giáº£ láº­p theo cÃ´ng suáº¥t trung bÃ¬nh</div>
           </div>
         </div>
       </div>
@@ -344,6 +341,11 @@ export function Dashboard() {
   const [page, setPage] = useState<"overview" | "hardware" | "power" | "settings">("overview");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const [ratePerKwhVND, setRatePerKwhVND] = useState<number>(3000);
+  const [rateDraft, setRateDraft] = useState<string>("3000");
+  const [rateBusy, setRateBusy] = useState(false);
+  const [rateMsg, setRateMsg] = useState<string | null>(null);
 
   useEffect(() => {
     let t: any;
@@ -361,12 +363,12 @@ export function Dashboard() {
         } else if (typeof data?.error === "string") {
           setErrorMsg(data.error);
         } else {
-          setErrorMsg("Dữ liệu không hợp lệ. Vui lòng kiểm tra Supabase/API.");
+          setErrorMsg("Dá»¯ liá»‡u khÃ´ng há»£p lá»‡. Vui lÃ²ng kiá»ƒm tra Supabase/API.");
         }
       } catch (e) {
-        // Không throw để tránh crash UI; chỉ hiển thị thông báo và tiếp tục retry.
+        // KhÃ´ng throw Ä‘á»ƒ trÃ¡nh crash UI; chá»‰ hiá»ƒn thá»‹ thÃ´ng bÃ¡o vÃ  tiáº¿p tá»¥c retry.
         console.error("Failed to fetch /api/metrics:", e);
-        setErrorMsg("Không thể tải dữ liệu từ Supabase/API. Vui lòng kiểm tra ENV/khả năng kết nối.");
+        setErrorMsg("KhÃ´ng thá»ƒ táº£i dá»¯ liá»‡u tá»« Supabase/API. Vui lÃ²ng kiá»ƒm tra ENV/kháº£ nÄƒng káº¿t ná»‘i.");
       }
       t = setTimeout(load, 5000);
     };
@@ -379,6 +381,27 @@ export function Dashboard() {
     };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+    const loadRate = async () => {
+      try {
+        const res = await fetch("/api/rate", { cache: "no-store" });
+        const data = await res.json();
+        if (!cancelled && data?.ok) {
+          const r = Number(data.ratePerKwhVND ?? 3000);
+          setRatePerKwhVND(r);
+          setRateDraft(String(r));
+        }
+      } catch {
+        // Keep default rate if API fails.
+      }
+    };
+    loadRate();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const formatUptime = (totalSeconds: number) => {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -387,17 +410,17 @@ export function Dashboard() {
   };
 
   const navItems = [
-    { key: "overview", label: "Tổng quan", icon: Activity },
-    { key: "hardware", label: "Phần cứng", icon: Cpu },
-    { key: "power", label: "Điện năng", icon: Zap },
-    { key: "settings", label: "Cài đặt", icon: Settings },
+    { key: "overview", label: "Tá»•ng quan", icon: Activity },
+    { key: "hardware", label: "Pháº§n cá»©ng", icon: Cpu },
+    { key: "power", label: "Äiá»‡n nÄƒng", icon: Zap },
+    { key: "settings", label: "CÃ i Ä‘áº·t", icon: Settings },
   ] as const;
 
   const pageTitles: Record<string, string> = {
-    overview: "Bảng điều khiển",
-    hardware: "Phần cứng",
-    power: "Điện năng",
-    settings: "Cài đặt",
+    overview: "Báº£ng Ä‘iá»u khiá»ƒn",
+    hardware: "Pháº§n cá»©ng",
+    power: "Äiá»‡n nÄƒng",
+    settings: "CÃ i Ä‘áº·t",
   };
 
   const chartData = useMemo<ChartPoint[]>(() => {
@@ -411,6 +434,12 @@ export function Dashboard() {
   const currentPower = latest ? `${Number(latest.realtimeEstimatedW).toFixed(1)} W` : "---";
   const bootKwh = latest ? `${Number(latest.estimatedKwhFromBoot).toFixed(3)} kWh` : "---";
   const costVnd = latest ? `${Number(latest.estimatedCostFromBootVND).toLocaleString("vi-VN")} VND` : "---";
+  const bootTimeText = (() => {
+    if (!latest?.time || typeof latest?.uptimeHours !== "number") return "Ke tu lan khoi dong cuoi";
+    const bootMs = new Date(latest.time).getTime() - latest.uptimeHours * 3600 * 1000;
+    if (!Number.isFinite(bootMs)) return "Ke tu lan khoi dong cuoi";
+    return `Khoi dong luc ${new Date(bootMs).toLocaleString("vi-VN")}`;
+  })();
 
   const ramUsed = Number(latest?.ramUsedGB ?? 0);
   const ramTotal = Number(latest?.ramTotalGB ?? 0);
@@ -501,30 +530,30 @@ export function Dashboard() {
             <div className="max-w-7xl mx-auto space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <MetricCard
-                  title="Thời gian hoạt động"
+                  title="Thá»i gian hoáº¡t Ä‘á»™ng"
                   value={formatUptime(uptime)}
-                  subtitle="Kể từ lần khởi động cuối"
+                  subtitle={bootTimeText}
                   icon={Clock}
                   colorClass="bg-blue-500 text-blue-400"
                 />
                 <MetricCard
-                  title="Công suất hiện tại"
+                  title="CÃ´ng suáº¥t hiá»‡n táº¡i"
                   value={currentPower}
-                  subtitle="Công suất realtime từ máy local"
+                  subtitle="CÃ´ng suáº¥t realtime tá»« mÃ¡y local"
                   icon={Zap}
                   colorClass="bg-amber-500 text-amber-400"
                 />
                 <MetricCard
-                  title="Số điện tiêu thụ"
+                  title="Sá»‘ Ä‘iá»‡n tiÃªu thá»¥"
                   value={bootKwh}
-                  subtitle="kWh tính từ lúc máy khởi động"
+                  subtitle="kWh tÃ­nh tá»« lÃºc mÃ¡y khá»Ÿi Ä‘á»™ng"
                   icon={TrendingUp}
                   colorClass="bg-indigo-500 text-indigo-400"
                 />
                 <MetricCard
-                  title="Tiền điện ước tính"
+                  title="Tiá»n Ä‘iá»‡n Æ°á»›c tÃ­nh"
                   value={costVnd}
-                  subtitle={`Tính theo giá ${latest?.ratePerKwhVND ? Number(latest.ratePerKwhVND).toLocaleString("vi-VN") : "---"} VND/kWh`}
+                  subtitle={`TÃ­nh theo giÃ¡ ${latest?.ratePerKwhVND ? Number(latest.ratePerKwhVND).toLocaleString("vi-VN") : "---"} VND/kWh`}
                   icon={DollarSign}
                   colorClass="bg-emerald-500 text-emerald-400"
                 />
@@ -534,8 +563,8 @@ export function Dashboard() {
                 <div className="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
                   <div className="flex justify-between items-center mb-6">
                     <div>
-                      <h3 className="text-lg font-semibold text-white">Biểu đồ tiêu thụ điện</h3>
-                      <p className="text-sm text-slate-400">Dữ liệu thật từ các mẫu gần đây</p>
+                      <h3 className="text-lg font-semibold text-white">Biá»ƒu Ä‘á»“ tiÃªu thá»¥ Ä‘iá»‡n</h3>
+                      <p className="text-sm text-slate-400">Dá»¯ liá»‡u tháº­t tá»« cÃ¡c máº«u gáº§n Ä‘Ã¢y</p>
                     </div>
                   </div>
                   <div className="h-72 w-full">
@@ -544,8 +573,8 @@ export function Dashboard() {
                 </div>
 
                 <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm flex flex-col">
-                  <h3 className="text-lg font-semibold text-white mb-1">Trạng thái phần cứng</h3>
-                  <p className="text-sm text-slate-400 mb-6">Thông số hệ thống theo thời gian thực</p>
+                  <h3 className="text-lg font-semibold text-white mb-1">Tráº¡ng thÃ¡i pháº§n cá»©ng</h3>
+                  <p className="text-sm text-slate-400 mb-6">ThÃ´ng sá»‘ há»‡ thá»‘ng theo thá»i gian thá»±c</p>
 
                   <div className="space-y-6 flex-1">
                     <div>
@@ -554,7 +583,7 @@ export function Dashboard() {
                           <Cpu className="w-4 h-4 text-blue-400" /> CPU
                         </div>
                       </div>
-                      <div className="text-xs text-slate-500 mb-2">{latest?.cpuName || "Không có tên CPU"}</div>
+                      <div className="text-xs text-slate-500 mb-2">{latest?.cpuName || "KhÃ´ng cÃ³ tÃªn CPU"}</div>
                       <ProgressBar label="Load" value={Number(latest?.cpuPercent ?? 0).toFixed(1)} max={100} unit="%" color="bg-blue-500" />
                     </div>
 
@@ -564,7 +593,7 @@ export function Dashboard() {
                           <Monitor className="w-4 h-4 text-emerald-400" /> GPU
                         </div>
                       </div>
-                      <div className="text-xs text-slate-500 mb-2">{latest?.gpuName || "Không có tên GPU"}</div>
+                      <div className="text-xs text-slate-500 mb-2">{latest?.gpuName || "KhÃ´ng cÃ³ tÃªn GPU"}</div>
                       <ProgressBar label="Power hint" value={Number(latest?.realtimeEstimatedW ?? 0).toFixed(1)} max={300} unit="W" color="bg-emerald-500" />
                     </div>
 
@@ -581,7 +610,7 @@ export function Dashboard() {
                     <div>
                       <div className="flex justify-between items-center mb-2">
                         <div className="flex items-center gap-2 text-white font-medium">
-                          <HardDrive className="w-4 h-4 text-purple-400" /> Lưu trữ
+                          <HardDrive className="w-4 h-4 text-purple-400" /> LÆ°u trá»¯
                         </div>
                       </div>
                       <div className="text-xs text-slate-500 mb-2">Disk C:</div>
@@ -599,7 +628,7 @@ export function Dashboard() {
                   <div>
                     <h4 className="text-slate-300 font-medium">CPU Load</h4>
                     <div className="text-2xl font-semibold text-white mt-1">{Number(latest?.cpuPercent ?? 0).toFixed(2)} %</div>
-                    <p className="text-xs text-slate-500 mt-1">Dữ liệu thật</p>
+                    <p className="text-xs text-slate-500 mt-1">Dá»¯ liá»‡u tháº­t</p>
                   </div>
                 </div>
 
@@ -608,11 +637,11 @@ export function Dashboard() {
                     <Monitor className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="text-slate-300 font-medium">RAM đã dùng</h4>
+                    <h4 className="text-slate-300 font-medium">RAM Ä‘Ã£ dÃ¹ng</h4>
                     <div className="text-2xl font-semibold text-white mt-1">
                       {ramUsed.toFixed(2)} / {ramTotal.toFixed(2)} GB
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">Đọc từ hệ thống</p>
+                    <p className="text-xs text-slate-500 mt-1">Äá»c tá»« há»‡ thá»‘ng</p>
                   </div>
                 </div>
 
@@ -621,9 +650,9 @@ export function Dashboard() {
                     <Zap className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="text-slate-300 font-medium">Disk C còn trống</h4>
+                    <h4 className="text-slate-300 font-medium">Disk C cÃ²n trá»‘ng</h4>
                     <div className="text-2xl font-semibold text-white mt-1">{diskFree.toFixed(2)} GB</div>
-                    <p className="text-xs text-slate-500 mt-1">Tổng {diskTotal.toFixed(2)} GB</p>
+                    <p className="text-xs text-slate-500 mt-1">Tá»•ng {diskTotal.toFixed(2)} GB</p>
                   </div>
                 </div>
               </div>
@@ -639,14 +668,14 @@ export function Dashboard() {
               <MetricCard
                 title="RAM"
                 value={`${ramUsed.toFixed(2)} / ${ramTotal.toFixed(2)} GB`}
-                subtitle="Sử dụng bộ nhớ"
+                subtitle="Sá»­ dá»¥ng bá»™ nhá»›"
                 icon={Activity}
                 colorClass="bg-amber-500 text-amber-400"
               />
               <MetricCard
                 title="Disk C"
                 value={`${diskFree.toFixed(2)} GB free`}
-                subtitle={`Tổng ${diskTotal.toFixed(2)} GB`}
+                subtitle={`Tá»•ng ${diskTotal.toFixed(2)} GB`}
                 icon={HardDrive}
                 colorClass="bg-purple-500 text-purple-400"
               />
@@ -656,9 +685,9 @@ export function Dashboard() {
           {page === "power" && (
             <div className="max-w-5xl mx-auto space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <MetricCard title="Realtime Power" value={currentPower} subtitle="W hiện tại" icon={Zap} colorClass="bg-amber-500 text-amber-400" />
-                <MetricCard title="kWh từ boot" value={bootKwh} subtitle="Năng lượng tích lũy" icon={TrendingUp} colorClass="bg-indigo-500 text-indigo-400" />
-                <MetricCard title="Chi phí từ boot" value={costVnd} subtitle="Theo giá điện đang đặt" icon={DollarSign} colorClass="bg-emerald-500 text-emerald-400" />
+                <MetricCard title="Realtime Power" value={currentPower} subtitle="W hiá»‡n táº¡i" icon={Zap} colorClass="bg-amber-500 text-amber-400" />
+                <MetricCard title="kWh tá»« boot" value={bootKwh} subtitle="NÄƒng lÆ°á»£ng tÃ­ch lÅ©y" icon={TrendingUp} colorClass="bg-indigo-500 text-indigo-400" />
+                <MetricCard title="Chi phÃ­ tá»« boot" value={costVnd} subtitle="Theo giÃ¡ Ä‘iá»‡n Ä‘ang Ä‘áº·t" icon={DollarSign} colorClass="bg-emerald-500 text-emerald-400" />
               </div>
               <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm h-80">
                 <SvgAreaChart data={chartData} />
@@ -667,9 +696,77 @@ export function Dashboard() {
           )}
 
           {page === "settings" && (
-            <div className="flex flex-col items-center justify-center h-full text-slate-500">
-              <Settings className="w-12 h-12 mb-3 opacity-30" />
-              <p className="text-lg">Cài đặt đang phát triển...</p>
+            <div className="max-w-2xl mx-auto bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-sm">
+              <div className="flex items-center gap-3 mb-6">
+                <Settings className="w-10 h-10 opacity-30" />
+                <div>
+                  <h3 className="text-xl font-semibold text-white">CÃ i Ä‘áº·t giÃ¡ Ä‘iá»‡n</h3>
+                  <p className="text-sm text-slate-400 mt-1">Collector sáº½ tá»± láº¥y giÃ¡ má»›i Ä‘á»ƒ tÃ­nh chi phÃ­ Ä‘iá»‡n.</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <label className="text-sm text-slate-300 font-medium">GiÃ¡ Ä‘iá»‡n (VND/kWh)</label>
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    value={rateDraft}
+                    onChange={(e) => {
+                      setRateDraft(e.target.value);
+                      setRateMsg(null);
+                    }}
+                    className="w-44 px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white outline-none"
+                    min={1}
+                  />
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    disabled={rateBusy}
+                    onClick={async () => {
+                      setRateBusy(true);
+                      setRateMsg(null);
+                      try {
+                        const rate = Number(rateDraft);
+                        const res = await fetch("/api/rate", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ ratePerKwhVND: rate }),
+                        });
+                        const data = await res.json();
+                        if (data?.ok) {
+                          setRatePerKwhVND(rate);
+                          setRateDraft(String(rate));
+                          setRateMsg("ÄÃ£ cáº­p nháº­t. Chá» collector cáº­p nháº­t trong vÃ i phÃºt.");
+                        } else {
+                          setRateMsg(typeof data?.error === "string" ? data.error : "KhÃ´ng thá»ƒ cáº­p nháº­t rate.");
+                        }
+                      } catch {
+                        setRateMsg("KhÃ´ng thá»ƒ káº¿t ná»‘i tá»›i /api/rate.");
+                      } finally {
+                        setRateBusy(false);
+                      }
+                    }}
+                    className="px-4 py-2 rounded-lg bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 hover:text-indigo-200 disabled:opacity-60 disabled:hover:text-indigo-300"
+                  >
+                    {rateBusy ? "Äang lÆ°u..." : "Save"}
+                  </button>
+                  <div className="text-xs text-slate-500">
+                    Äang dÃ¹ng: <span className="text-slate-300 font-medium">{ratePerKwhVND.toLocaleString("vi-VN")}</span> VND/kWh
+                  </div>
+                </div>
+
+                {rateMsg && (
+                  <div
+                    className={`text-sm rounded-lg px-4 py-3 border ${
+                      rateMsg.startsWith("ÄÃ£") ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-200" : "bg-rose-500/10 border-rose-500/20 text-rose-100"
+                    }`}
+                  >
+                    {rateMsg}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -677,3 +774,4 @@ export function Dashboard() {
     </div>
   );
 }
+

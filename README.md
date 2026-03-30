@@ -9,7 +9,10 @@ Realtime dashboard to show:
 
 ## 1) Create table on Supabase
 
-Open Supabase SQL Editor and run `supabase_init.sql`.
+Open Supabase SQL Editor and run:
+
+- `supabase_init.sql` (pc_power_metrics)
+- `supabase_init_settings.sql` (pc_power_settings)
 
 ## 2) Required env vars on Vercel
 
