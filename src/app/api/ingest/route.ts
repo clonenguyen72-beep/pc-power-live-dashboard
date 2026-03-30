@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
       os_name: String(body.osName ?? ""),
     };
 
-    const supabase: any = getSupabase();
+    const supabase = getSupabase();
     const { error } = await supabase.from("pc_power_metrics").insert(payload);
 
     if (error) {

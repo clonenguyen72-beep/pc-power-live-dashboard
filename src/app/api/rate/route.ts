@@ -5,7 +5,7 @@ const DEFAULT_RATE_VND_PER_KWH = 3000;
 
 export async function GET() {
   try {
-    const supabase: any = getSupabase();
+    const supabase = getSupabase();
     const { data, error } = await supabase
       .from("pc_power_settings")
       .select("rate_per_kwh_vnd")
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "ratePerKwhVND không hợp lệ" }, { status: 400 });
     }
 
-    const supabase: any = getSupabase();
+    const supabase = getSupabase();
 
     const { error } = await supabase
       .from("pc_power_settings")

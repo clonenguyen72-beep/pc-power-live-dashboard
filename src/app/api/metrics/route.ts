@@ -1,24 +1,34 @@
 import { NextResponse } from "next/server";
 import { getSupabase } from "@/lib/supabase";
 
-function mapRow(r: any) {
+type SupabaseRow = Record<string, unknown>;
+
+function num(row: SupabaseRow, key: string) {
+  return Number(row[key] ?? 0);
+}
+
+function str(row: SupabaseRow, key: string) {
+  return String(row[key] ?? "");
+}
+
+function mapRow(row: SupabaseRow) {
   return {
-    time: r.time,
-    uptimeHours: Number(r.uptime_hours ?? 0),
-    cpuPercent: Number(r.cpu_percent ?? 0),
-    realtimeEstimatedW: Number(r.realtime_estimated_w ?? 0),
-    avgWFromBoot: Number(r.avg_w_from_boot ?? 0),
-    estimatedKwhFromBoot: Number(r.estimated_kwh_from_boot ?? 0),
-    estimatedCostFromBootVND: Number(r.estimated_cost_from_boot_vnd ?? 0),
-    ratePerKwhVND: Number(r.rate_per_kwh_vnd ?? 0),
-    host: String(r.host ?? ""),
-    cpuName: String(r.cpu_name ?? ""),
-    gpuName: String(r.gpu_name ?? ""),
-    ramTotalGB: Number(r.ram_total_gb ?? 0),
-    ramUsedGB: Number(r.ram_used_gb ?? 0),
-    diskTotalGB: Number(r.disk_total_gb ?? 0),
-    diskFreeGB: Number(r.disk_free_gb ?? 0),
-    osName: String(r.os_name ?? ""),
+    time: str(row, "time"),
+    uptimeHours: num(row, "uptime_hours"),
+    cpuPercent: num(row, "cpu_percent"),
+    realtimeEstimatedW: num(row, "realtime_estimated_w"),
+    avgWFromBoot: num(row, "avg_w_from_boot"),
+    estimatedKwhFromBoot: num(row, "estimated_kwh_from_boot"),
+    estimatedCostFromBootVND: num(row, "estimated_cost_from_boot_vnd"),
+    ratePerKwhVND: num(row, "rate_per_kwh_vnd"),
+    host: str(row, "host"),
+    cpuName: str(row, "cpu_name"),
+    gpuName: str(row, "gpu_name"),
+    ramTotalGB: num(row, "ram_total_gb"),
+    ramUsedGB: num(row, "ram_used_gb"),
+    diskTotalGB: num(row, "disk_total_gb"),
+    diskFreeGB: num(row, "disk_free_gb"),
+    osName: str(row, "os_name"),
   };
 }
 

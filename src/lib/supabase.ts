@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
+import type { Database } from "./database.types";
 
-let client: ReturnType<typeof createClient> | null = null;
+let client: ReturnType<typeof createClient<Database>> | null = null;
 
 export function getSupabase() {
   if (client) return client;
@@ -12,7 +13,7 @@ export function getSupabase() {
     throw new Error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
   }
 
-  client = createClient(url, serviceRole, {
+  client = createClient<Database>(url, serviceRole, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
